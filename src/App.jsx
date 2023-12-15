@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import NewTodoForm from './components/NewTodoForm.jsx';
 import TodoList from './components/TodoList.jsx';
 
@@ -6,11 +6,16 @@ import './index.css';
 
 export default function App() {
 
- const [todos, setTodos] = useState([
-  { id:crypto.randomUUID(), title: 'item1', completed: false },
-  { id:crypto.randomUUID(), title: 'item2', completed: false },
-  { id:crypto.randomUUID(), title: 'item3', completed: true } 
-]);
+ const [todos, setTodos] = useState(()=> {
+  const localValue=localStorage.getItem('ITEMS');
+  if(localValue === null) return [];
+
+  return JSON.parse(localValue);
+ });
+
+useEffect(() => {
+  localStorage.setItem('ITEMS', JSON.stringify(todos))
+}, [todos]);
 
 const addTodo = (title) =>{
   setTodos((currentTodos) => {
